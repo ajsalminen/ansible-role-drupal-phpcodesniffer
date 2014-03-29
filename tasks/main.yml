@@ -1,0 +1,12 @@
+---
+
+- name: Install coder module files
+  git: repo=http://git.drupal.org/project/coder.git version=7.x-2.x dest=~/opt/coder
+
+- name: Link drupalcs to codesniffer standards dir
+  file: src=/home/anttis/opt/coder/coder_sniffer/Drupal dest=/usr/share/php/PHP/CodeSniffer/Standards/Drupal state=link owner=root group=root
+  sudo: yes
+
+- name: Modify ConstantNameSniff to work with flymake's temp file name.
+  lineinfile: dest=~/opt/coder/coder_sniffer/Drupal/Sniffs/Semantics/ConstantNameSniff.php regexp='moduleName    = substr'
+   line="        $moduleName    = substr(basename($phpcsFile->getFilename()), 0, -15);"
